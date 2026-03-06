@@ -13,6 +13,16 @@ OpenClaw Windows 一键部署（飞书版）
 
 你通常不需要手动输入命令。
 
+在开始前，请先确认两件事：
+
+1. 你已经在飞书开放平台创建好了应用，并拿到了 `App ID` 和 `App Secret`。
+2. 你的 OpenClaw 已经有可用的模型授权。
+
+说明：
+
+- 如果你用的是 `OpenAI Business / Codex OAuth`，通常不是填 API Key，而是先在本机完成 OpenClaw 的登录或配置。
+- 如果你走 API 模式，则要先准备对应模型服务的 API 凭证。
+
 如果失败：
 
 1. 先重新运行一次 `install.cmd`。

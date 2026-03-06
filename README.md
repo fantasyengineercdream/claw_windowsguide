@@ -24,6 +24,42 @@
 
 对大多数用户来说，到这里已经够用了。
 
+## 发布前先讲清楚 3 个前提
+
+如果你要把这个项目发给新手用户，至少要先讲清楚下面 3 件事：
+
+1. 他们需要一个飞书应用，因此要准备 `飞书 App ID` 和 `飞书 App Secret`。
+2. 他们还需要一个可用的模型授权来源。
+3. 安装完成后，仍然要做一次飞书配对批准。
+
+如果这 3 件事不提前说清楚，用户很容易误以为“双击就能直接聊”，然后在中途卡住。
+
+## 用户到底需要什么凭证
+
+这个项目本身不要求用户额外理解很多概念，但至少需要两类凭证：
+
+1. 飞书侧凭证：
+   - `飞书 App ID`
+   - `飞书 App Secret`
+
+2. 模型侧授权：
+   - 如果用户走 `OpenAI Business + Codex OAuth`，通常不是单独填 API Key，而是先在本机完成 `openclaw configure` 或已有可用登录配置。
+   - 如果用户走 API 模式，那就需要用户自己准备相应模型服务的 API 凭证。
+
+当前这个安装器只负责收集飞书 `App ID / Secret`，不会自动替用户完成模型平台登录。
+
+## 用户在哪些环节需要自己操作
+
+这个项目不是“完全零操作”，新手用户至少要自己完成下面几个动作：
+
+1. 在飞书开放平台创建应用，并拿到 `App ID / App Secret`
+2. 首次使用 OpenClaw 时，确认本机已经有可用的模型授权配置
+3. 运行安装器，填写飞书配置
+4. 在飞书里拿到配对码
+5. 回到安装器里点击 `批准配对`
+
+其中第 1 步和第 2 步，是当前教程里最容易被忽略的。
+
 ## 这东西适合谁
 
 - 你在 Windows 上想用 OpenClaw，但不想折腾 WSL / Docker
@@ -166,6 +202,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-fe
 - `docs/MARKETING_COPY_CN.md`：中文宣传文案模板
 - `docs/FEISHU_SECURITY_CHECKLIST.md`：飞书安全检查清单
 - `docs/BEGINNER_DELIVERY.md`：给从没用过 GitHub 的小白用户的交付建议
+- `docs/PUBLISH_CHECKLIST_CN.md`：发布给新手前必须讲清楚的检查清单
 
 ## GUI 截图命令
 
