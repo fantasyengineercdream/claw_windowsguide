@@ -1,6 +1,6 @@
 ﻿# OpenClaw Windows 一键部署（飞书版）
 
-这是一个面向 Windows 小白用户的 OpenClaw 一键部署项目：
+给 Windows 小白用户准备的 OpenClaw 一键安装包。
 
 - 默认只启用飞书通道
 - 不依赖 WSL
@@ -11,16 +11,32 @@
 
 上图是当前安装器 GUI 的真实截图。
 
-## 先说结论
+## 先安装，再看细节
 
-如果你是第一次接触 GitHub，不要先研究代码，直接这样做：
+如果你是第一次接触 GitHub，不要先研究代码，直接按下面 3 步做：
 
-1. 下载发布包并解压。
-2. 双击 `install.cmd`。
-3. 按界面填写飞书 App ID 和 App Secret。
-4. 点击 `一键安装并启动`。
+1. 下载压缩包：
+   `Code -> Download ZIP`
+   或直接打开：
+   `https://github.com/fantasyengineercdream/claw_windowsguide/archive/refs/heads/main.zip`
+2. 解压后，双击 `install.cmd`。
+3. 按界面填写飞书 App ID 和 App Secret，然后点击 `一键安装并启动`。
 
-对大多数小白用户来说，这已经够用了。
+对大多数用户来说，到这里已经够用了。
+
+## 这东西适合谁
+
+- 你在 Windows 上想用 OpenClaw，但不想折腾 WSL / Docker
+- 你希望默认走飞书，不想先研究 Telegram
+- 你想直接处理本机文件，而不是先学 Linux 路径
+- 你希望有一个能解释清楚的基础安全边界
+
+## 你会得到什么
+
+- 中文 GUI 安装器
+- 飞书优先的一键配置流程
+- 启动网关和批准配对的按钮化操作
+- 可选的 `ACL` 硬锁边界
 
 ## 给小白怎么交付
 
