@@ -12,6 +12,7 @@ Add-Type -AssemblyName System.Drawing
 $isScreenshotMode = -not [string]::IsNullOrWhiteSpace($ScreenshotPath)
 $bootstrapScript = Join-Path $PSScriptRoot "bootstrap-openclaw-feishu.ps1"
 $startGatewayScript = Join-Path $PSScriptRoot "start-openclaw-gateway.ps1"
+$modelGuidePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\docs\OPENCLAW_MODEL_SETUP_CN.md"))
 
 if (-not (Test-Path -LiteralPath $bootstrapScript)) {
     [System.Windows.Forms.MessageBox]::Show(
@@ -121,8 +122,8 @@ function Save-FormScreenshot {
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "OpenClaw 一键安装 (飞书版)"
 $form.StartPosition = "CenterScreen"
-$form.Size = New-Object System.Drawing.Size(1000, 840)
-$form.MinimumSize = New-Object System.Drawing.Size(1000, 840)
+$form.Size = New-Object System.Drawing.Size(1000, 900)
+$form.MinimumSize = New-Object System.Drawing.Size(1000, 900)
 $form.BackColor = [System.Drawing.Color]::FromArgb(243, 246, 251)
 $form.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 9)
 
@@ -148,9 +149,35 @@ $subtitle.ForeColor = [System.Drawing.Color]::FromArgb(210, 226, 255)
 $subtitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 9)
 $panelHeader.Controls.Add($subtitle)
 
+$panelPrereq = New-Object System.Windows.Forms.Panel
+$panelPrereq.Location = New-Object System.Drawing.Point(20, 108)
+$panelPrereq.Size = New-Object System.Drawing.Size(944, 64)
+$panelPrereq.BackColor = [System.Drawing.Color]::FromArgb(255, 248, 230)
+$panelPrereq.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+$form.Controls.Add($panelPrereq)
+
+$prereqTitle = New-Object System.Windows.Forms.Label
+$prereqTitle.Text = "先做模型准备, 再做飞书接入"
+$prereqTitle.Location = New-Object System.Drawing.Point(16, 10)
+$prereqTitle.Size = New-Object System.Drawing.Size(280, 24)
+$prereqTitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 10, [System.Drawing.FontStyle]::Bold)
+$prereqTitle.ForeColor = [System.Drawing.Color]::FromArgb(120, 80, 8)
+$panelPrereq.Controls.Add($prereqTitle)
+
+$prereqText = New-Object System.Windows.Forms.Label
+$prereqText.Text = "这一步只负责安装 OpenClaw 和接入飞书. 开始前, 请先在 OpenClaw 里完成模型接入, 再选好默认模型."
+$prereqText.Location = New-Object System.Drawing.Point(16, 34)
+$prereqText.Size = New-Object System.Drawing.Size(720, 20)
+$prereqText.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 9)
+$prereqText.ForeColor = [System.Drawing.Color]::FromArgb(102, 76, 11)
+$panelPrereq.Controls.Add($prereqText)
+
+$btnOpenModelGuide = New-Button -Text "打开模型准备教程" -X 770 -Y 14 -Width 154 -Height 34 -BackColor ([System.Drawing.Color]::FromArgb(255, 183, 77)) -ForeColor ([System.Drawing.Color]::FromArgb(74, 43, 0))
+$panelPrereq.Controls.Add($btnOpenModelGuide)
+
 $panelConfig = New-Object System.Windows.Forms.Panel
-$panelConfig.Location = New-Object System.Drawing.Point(20, 108)
-$panelConfig.Size = New-Object System.Drawing.Size(944, 360)
+$panelConfig.Location = New-Object System.Drawing.Point(20, 186)
+$panelConfig.Size = New-Object System.Drawing.Size(944, 396)
 $panelConfig.BackColor = [System.Drawing.Color]::White
 $panelConfig.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
 $form.Controls.Add($panelConfig)
@@ -199,6 +226,21 @@ $txtAppSecret.UseSystemPasswordChar = $true
 $panelConfig.Controls.Add($txtAppSecret)
 
 $y += 44
+$chkModelReady = New-Object System.Windows.Forms.CheckBox
+$chkModelReady.Text = "我已经在 OpenClaw 里完成模型接入, 并选好了默认模型"
+$chkModelReady.Location = New-Object System.Drawing.Point(190, $y)
+$chkModelReady.Size = New-Object System.Drawing.Size(470, 24)
+$panelConfig.Controls.Add($chkModelReady)
+
+$hintModelReady = New-Object System.Windows.Forms.Label
+$hintModelReady.Text = "不知道怎么做? 点上方""打开模型准备教程"""
+$hintModelReady.Location = New-Object System.Drawing.Point(680, ($y + 2))
+$hintModelReady.Size = New-Object System.Drawing.Size(244, 20)
+$hintModelReady.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 8)
+$hintModelReady.ForeColor = [System.Drawing.Color]::FromArgb(110, 120, 140)
+$panelConfig.Controls.Add($hintModelReady)
+
+$y += 44
 $panelConfig.Controls.Add((New-Label -Text "硬锁账号" -X 16 -Y $y -Width 170))
 $txtBotUser = New-Input -X 190 -Y ($y - 2) -Width 320
 $txtBotUser.Text = "openclaw_bot"
@@ -224,7 +266,7 @@ $chkSkipSiblingDeny.Size = New-Object System.Drawing.Size(260, 24)
 $panelConfig.Controls.Add($chkSkipSiblingDeny)
 
 $panelOps = New-Object System.Windows.Forms.Panel
-$panelOps.Location = New-Object System.Drawing.Point(20, 482)
+$panelOps.Location = New-Object System.Drawing.Point(20, 596)
 $panelOps.Size = New-Object System.Drawing.Size(944, 122)
 $panelOps.BackColor = [System.Drawing.Color]::White
 $panelOps.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
@@ -255,7 +297,7 @@ $btnClose = New-Button -Text "关闭" -X 816 -Y 44 -Width 110 -Height 38 -BackCo
 $panelOps.Controls.Add($btnClose)
 
 $panelLog = New-Object System.Windows.Forms.Panel
-$panelLog.Location = New-Object System.Drawing.Point(20, 618)
+$panelLog.Location = New-Object System.Drawing.Point(20, 732)
 $panelLog.Size = New-Object System.Drawing.Size(944, 174)
 $panelLog.BackColor = [System.Drawing.Color]::White
 $panelLog.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
@@ -323,6 +365,29 @@ $btnState.Add_Click({
 
 $btnClose.Add_Click({
     $form.Close()
+})
+
+$btnOpenModelGuide.Add_Click({
+    if (-not (Test-Path -LiteralPath $modelGuidePath)) {
+        [System.Windows.Forms.MessageBox]::Show(
+            "未找到教程文件: $modelGuidePath",
+            "OpenClaw 一键安装",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Warning
+        ) | Out-Null
+        return
+    }
+
+    try {
+        Start-Process $modelGuidePath | Out-Null
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show(
+            "打开教程失败: $($_.Exception.Message)",
+            "OpenClaw 一键安装",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Error
+        ) | Out-Null
+    }
 })
 
 $btnStartGateway.Add_Click({
@@ -422,6 +487,15 @@ $btnRun.Add_Click({
         ) | Out-Null
         return
     }
+    if (-not $chkModelReady.Checked) {
+        [System.Windows.Forms.MessageBox]::Show(
+            "请先在 OpenClaw 里完成模型接入并选好默认模型, 再回来执行安装.`r`n`r`n你可以点击顶部的""打开模型准备教程"".",
+            "先完成模型准备",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Warning
+        ) | Out-Null
+        return
+    }
     if ([string]::IsNullOrWhiteSpace($txtWorkspace.Text)) {
         [System.Windows.Forms.MessageBox]::Show(
             "请填写工作目录.",
@@ -499,9 +573,11 @@ if ($isScreenshotMode) {
     $txtState.Text = "D:\OpenClawWorkspace\.openclaw-state"
     $txtAppId.Text = "cli_your_app_id"
     $txtAppSecret.Text = "****************"
+    $chkModelReady.Checked = $true
     $txtBotUser.Text = "openclaw_bot"
     $txtPairCode.Text = "PAIRCODE123"
     $txtLog.Text = @"
+[提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
 [步骤] 准备工作目录
 [步骤] 检查 Node.js 运行环境
 [步骤] 写入飞书通道配置

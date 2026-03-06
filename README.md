@@ -20,7 +20,10 @@
    或直接打开：
    `https://github.com/fantasyengineercdream/claw_windowsguide/archive/refs/heads/main.zip`
 2. 解压后，双击 `install.cmd`。
-3. 按界面填写飞书 App ID 和 App Secret，然后点击 `一键安装并启动`。
+3. 先按 [`docs/OPENCLAW_MODEL_SETUP_CN.md`](docs/OPENCLAW_MODEL_SETUP_CN.md) 把 OpenClaw 里的模型接入和默认模型配置好。
+4. 再按界面填写飞书 App ID 和 App Secret，然后点击 `一键安装并启动`。
+
+如果你还没完成模型接入或默认模型选择，安装器会直接提醒并拦住，不会让你带着错误配置继续往下走。
 
 对大多数用户来说，到这里已经够用了。
 
