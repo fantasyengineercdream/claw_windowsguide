@@ -11,6 +11,37 @@
 
 上图是当前安装器 GUI 的真实截图。
 
+## 先说结论
+
+如果你是第一次接触 GitHub，不要先研究代码，直接这样做：
+
+1. 下载发布包并解压。
+2. 双击 `install.cmd`。
+3. 按界面填写飞书 App ID 和 App Secret。
+4. 点击 `一键安装并启动`。
+
+对大多数小白用户来说，这已经够用了。
+
+## 给小白怎么交付
+
+如果你要把这个项目发给没用过 GitHub 的人，不建议只发仓库首页。
+
+更好的交付顺序是：
+
+1. 直接发 `Release ZIP`
+2. 同时发一句话说明
+3. 再附这张安装器截图
+4. 如有条件，再补一个 30-60 秒录屏
+
+最推荐的话术：
+
+`这是给 Windows 用的一键安装包。下载并解压后，直接双击 install.cmd，然后按界面提示填飞书 App ID 和 Secret 就可以。`
+
+更完整的交付建议见：
+
+- `START_HERE_CN.txt`
+- `docs/BEGINNER_DELIVERY.md`
+
 ## 核心优势（可对外宣传）
 
 相对通用托管方案，本项目的 4 个核心优势：
@@ -118,6 +149,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-fe
 - `docs/LAUNCH_30D.md`：30 天发布执行清单
 - `docs/MARKETING_COPY_CN.md`：中文宣传文案模板
 - `docs/FEISHU_SECURITY_CHECKLIST.md`：飞书安全检查清单
+- `docs/BEGINNER_DELIVERY.md`：给从没用过 GitHub 的小白用户的交付建议
 
 ## GUI 截图命令
 
