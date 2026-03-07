@@ -7,6 +7,7 @@ This folder contains the smallest practical docs-first PR package for the offici
 - `PR_TITLE.txt`: suggested PR title
 - `PR_BODY.md`: copy-pasteable PR description
 - `FILE_PLAN.md`: where the upstream docs changes should go
+- `SUBMIT_AND_NOTIFY_CN.md`: how to submit and how to receive GitHub notifications
 - `docs/gateway/windows-no-docker-hardening.md`: the new docs page draft
 
 ## Why this route
