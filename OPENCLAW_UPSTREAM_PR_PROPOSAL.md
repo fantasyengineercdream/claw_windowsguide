@@ -52,3 +52,10 @@ This is intentionally docs-first and non-breaking. It does not change runtime de
 Implementation and scripts used for validation:
 - Hardlock project: `<YOUR_HARDLOCK_REPO_URL>`
 - Optional skill project (`clawusage`): https://github.com/fantasyengineercdream/clawusage
+
+## Ready-to-use materials in this repo
+
+- `upstream-pr/PR_TITLE.txt`
+- `upstream-pr/PR_BODY.md`
+- `upstream-pr/FILE_PLAN.md`
+- `upstream-pr/docs/gateway/windows-no-docker-hardening.md`
