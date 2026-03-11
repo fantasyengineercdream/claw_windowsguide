@@ -126,8 +126,8 @@ function Set-ScreenshotState {
         [Parameter(Mandatory = $true)][string]$Variant
     )
 
-    $txtWorkspace.Text = "D:\OpenClawWorkspace"
-    $txtState.Text = "D:\OpenClawWorkspace\.openclaw-state"
+    $txtWorkspace.Text = "%USERPROFILE%\openclaw-workspace"
+    $txtState.Text = "%USERPROFILE%\openclaw-workspace\.openclaw-state"
     $txtAppId.Text = ""
     $txtAppSecret.Text = ""
     $chkModelReady.Checked = $false
@@ -139,7 +139,7 @@ function Set-ScreenshotState {
             $txtLog.Text = "就绪. 请先准备飞书应用和 OpenClaw 模型, 再点击 一键安装并启动."
         }
         "configured" {
-            $txtAppId.Text = "cli_your_app_id"
+            $txtAppId.Text = "<已填写>"
             $txtAppSecret.Text = "****************"
             $chkModelReady.Checked = $true
             $txtLog.Text = @"
@@ -149,10 +149,10 @@ function Set-ScreenshotState {
 "@
         }
         "paired" {
-            $txtAppId.Text = "cli_your_app_id"
+            $txtAppId.Text = "<已填写>"
             $txtAppSecret.Text = "****************"
             $chkModelReady.Checked = $true
-            $txtPairCode.Text = "PAIRCODE123"
+            $txtPairCode.Text = "<配对码>"
             $txtLog.Text = @"
 [提示] 已先按飞书官方文档准备好 App ID/App Secret
 [提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
@@ -165,10 +165,10 @@ function Set-ScreenshotState {
 "@
         }
         default {
-            $txtAppId.Text = "cli_your_app_id"
+            $txtAppId.Text = "<已填写>"
             $txtAppSecret.Text = "****************"
             $chkModelReady.Checked = $true
-            $txtPairCode.Text = "PAIRCODE123"
+            $txtPairCode.Text = "<配对码>"
             $txtLog.Text = @"
 [提示] 已先按飞书官方文档准备好 App ID/App Secret
 [提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
@@ -643,5 +643,6 @@ if ($isScreenshotMode) {
 }
 
 [void]$form.ShowDialog()
+
 
 
