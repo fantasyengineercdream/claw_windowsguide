@@ -1,156 +1,226 @@
-﻿# OpenClaw Windows 一键部署（飞书版）
+# OpenClaw Windows 一键部署（飞书版）
 
-给 Windows 小白用户准备的 OpenClaw 一键安装包。
+给 Windows 用户准备的 OpenClaw 安装包。
 
-- 默认只启用飞书通道
+这套方案的特点：
+
+- 只做 Windows
+- 默认只接飞书
 - 不依赖 WSL
 - 不依赖 Docker
-- 支持可选 ACL 硬锁边界
+- 通过 OpenClaw 的 Feishu channel 把飞书接进来
+
+重要：
+
+- 飞书应用本身，仍然要先按飞书官方文档完成创建和基础配置
+- 本项目负责的是：把你已经准备好的飞书应用接到 OpenClaw
 
 ![OpenClaw 安装器截图](assets/gui/openclaw-easy-gui.png)
 
-上图是当前安装器 GUI 的真实截图。
+## 先看这一段
 
-## 先安装，再看细节
+如果你只是想装好它，不想研究代码，按这个顺序做：
 
-如果你是第一次接触 GitHub，不要先研究代码，直接按下面 3 步做：
-
-1. 下载压缩包：
-   `Code -> Download ZIP`
-   或直接打开：
-   `https://github.com/fantasyengineercdream/claw_windowsguide/archive/refs/heads/main.zip`
-2. 解压后，双击 `install.cmd`。
-3. 先按 [`docs/OPENCLAW_MODEL_SETUP_CN.md`](docs/OPENCLAW_MODEL_SETUP_CN.md) 把 OpenClaw 里的模型接入和默认模型配置好。
-4. 再按界面填写飞书 App ID 和 App Secret，然后点击 `一键安装并启动`。
-
-如果你还没完成模型接入或默认模型选择，安装器会直接提醒并拦住，不会让你带着错误配置继续往下走。
-
-对大多数用户来说，到这里已经够用了。
-
-## 发布前先讲清楚 4 个前提
-
-如果你要把这个项目发给新手用户，至少要先讲清楚下面 4 件事：
-
-1. 他们需要一个飞书应用，因此要准备 `飞书 App ID` 和 `飞书 App Secret`。
-2. 他们要先在 OpenClaw 里把模型链路跑通。
-3. 模型链路不只是“有没有 API Key”，还包括“默认模型选的是谁”。
-4. 安装完成后，仍然要做一次飞书配对批准。
-
-如果这 4 件事不提前说清楚，用户很容易误以为“双击就能直接聊”，然后在中途卡住。
-
-## 用户到底需要什么准备
-
-这个项目本身不要求用户先学很多概念，但至少要把下面 3 层分清楚：
-
-1. 飞书通道层：
+1. 先按飞书官方文档，在飞书开放平台创建应用并完成基础配置
+2. 拿到：
+   - `App ID`
+   - `App Secret`
+3. 再把 OpenClaw 的模型跑通  
+   参考：[docs/OPENCLAW_MODEL_SETUP_CN.md](docs/OPENCLAW_MODEL_SETUP_CN.md)
+4. 下载本项目 ZIP，解压后双击 `install.cmd`
+5. 在安装器里填：
+   - `工作目录`
    - `飞书 App ID`
    - `飞书 App Secret`
+6. 点击 `一键安装并启动`
+7. 去飞书里拿配对码
+8. 回到安装器里点击 `批准配对`
 
-2. 模型接入层：
-   - 这一层解决的是“OpenClaw 用哪个提供商、哪个账号、哪种授权方式”。
-   - 可能是 `Codex OAuth`，也可能是 API Key，或者别的 provider 登录方式。
-   - 这一步通常在 `openclaw configure --section model` 或相关模型配置里完成。
+做完这 8 步，才算完成。
 
-3. 模型选择层：
-   - 这一层解决的是“默认到底跑哪个模型”。
-   - 例如用 `openclaw models set` 或 `openclaw configure --section model` 设置默认模型。
+## 你需要提前准备什么
 
-当前这个安装器只负责收集飞书 `App ID / Secret`，不会自动替用户完成模型接入，也不会替用户选择默认模型。
+开始前，请先确认你已经有下面 2 样东西：
 
-## 用户在哪些环节需要自己操作
+1. 一个已经按飞书官方文档准备好的飞书应用
+2. 一个已经能用的 OpenClaw 模型配置
 
-这个项目不是“完全零操作”，新手用户至少要自己完成下面几个动作：
+如果这两样没有准备好，不要先点安装器。
 
-1. 在飞书开放平台创建应用，并拿到 `App ID / App Secret`
-2. 在 OpenClaw 里完成模型接入配置
-3. 在 OpenClaw 里确认默认模型已经选好
-4. 运行安装器，填写飞书配置
-5. 在飞书里拿到配对码
-6. 回到安装器里点击 `批准配对`
+## 这套方案到底是什么
 
-其中第 1 步到第 3 步，是当前教程里最容易被忽略的。
+这是：
 
-最简短的对外说法应该是：
+- OpenClaw Windows 本机安装方案
+- 飞书应用 + OpenClaw 接入方案
+- 通过 `appId/appSecret + pairing` 完成接入
 
-`先把 OpenClaw 里的模型跑通，再用这个包把飞书接上去。`
+这不是：
 
-## 这东西适合谁
+- 飞书官方文档的替代品
+- 飞书应用市场上架教程
+- “填完就自动拥有模型能力”的全自动方案
 
-- 你在 Windows 上想用 OpenClaw，但不想折腾 WSL / Docker
-- 你希望默认走飞书，不想先研究 Telegram
-- 你想直接处理本机文件，而不是先学 Linux 路径
-- 你希望有一个能解释清楚的基础安全边界
+## 最短安装步骤
 
-## 你会得到什么
+### 第 1 步：先准备飞书应用
 
-- 中文 GUI 安装器
-- 飞书优先的一键配置流程
-- 启动网关和批准配对的按钮化操作
-- 可选的 `ACL` 硬锁边界
+先按飞书官方文档，在飞书开放平台把应用创建好，并完成基础配置。
 
-## 给小白怎么交付
+然后拿到：
 
-如果你要把这个项目发给没用过 GitHub 的人，不建议只发仓库首页。
+- `App ID`
+- `App Secret`
 
-更好的交付顺序是：
+如果飞书应用这一步没准备好，不要先开安装器。
 
-1. 直接发 `Release ZIP`
-2. 同时发一句话说明
-3. 再附这张安装器截图
-4. 如有条件，再补一个 30-60 秒录屏
+### 第 2 步：再把模型跑通
 
-最推荐的话术：
+先确认 OpenClaw 已经能正常使用模型。
 
-`这是给 Windows 用的一键安装包。下载并解压后，直接双击 install.cmd，然后按界面提示填飞书 App ID 和 Secret 就可以。`
+如果这一步没做，后面的飞书接入没有意义。
 
-更完整的交付建议见：
+参考：
 
-- `START_HERE_CN.txt`
-- `docs/BEGINNER_DELIVERY.md`
+- [docs/OPENCLAW_MODEL_SETUP_CN.md](docs/OPENCLAW_MODEL_SETUP_CN.md)
 
-## 核心优势（可对外宣传）
+### 第 3 步：下载并解压
 
-相对通用托管方案，本项目的 4 个核心优势：
+下载 ZIP：
 
-1. Windows 本机可控：不依赖 WSL/Docker，直接在本机文件体系工作。
-2. 飞书优先且中文友好：默认飞书通道，界面和流程为中文小白设计。
-3. 安全边界可解释：支持低权限账号 + NTFS ACL 的可选硬锁策略。
-4. 开源可二开：脚本和流程透明，可私有化、可按团队需求改造。
+- `Code -> Download ZIP`
 
-## 更多可说的特色
+也可以直接打开：
 
-除核心优势外，还可以强调：
+- `https://github.com/fantasyengineercdream/claw_windowsguide/archive/refs/heads/main.zip`
 
-- 全流程 GUI：安装、启动网关、批准配对都可点按钮完成。
-- KISS 部署：默认路径 + 必填最少参数，降低首次上手成本。
-- 自动补齐依赖：缺 Node/openclaw 时自动安装。
-- 一键体检：`doctor` 脚本可快速判断配置与通道状态。
-- 双模式兼容：既可 GUI 给小白用，也可 CLI 给高级用户用。
-- 以本地文件为中心：适配 Windows 真实办公文件流，不绕远路。
+下载后解压。
 
-## 对外文案模板（可直接复用）
+### 第 4 步：双击安装器
 
-短句版：
+双击：
 
-- 不想折腾 WSL 和 Docker？在 Windows 上一键跑 OpenClaw，飞书开箱即用。
-- 给中文小白做的 OpenClaw 安装器：点按钮就能完成安装、启动和配对。
-- 主打本机可控 + 可选 ACL 安全边界，兼顾上手速度与可解释安全。
+- `install.cmd`
 
-说明版：
+默认会打开中文 GUI。
 
-本项目是面向 Windows 用户的 OpenClaw 一键部署方案。  
-不依赖 WSL/Docker，默认飞书通道，提供中文 GUI 与可选 ACL 硬锁。  
-适合不想折腾环境、但希望在本机文件上稳定运行自动化流程的用户。
+### 第 5 步：填写 3 个信息
 
-## 图形界面快速开始
+安装器里主要填写：
 
-1. 双击 `install.cmd`。
-2. 在界面中填写：`工作目录`、`飞书 App ID`、`飞书 App Secret`。
-3. 点击 `一键安装并启动`。
-4. 如需手动操作，可点击 `启动网关`。
-5. 把飞书里的配对码填到 `飞书配对码`，点击 `批准配对`。
+1. `工作目录`
+2. `飞书 App ID`
+3. `飞书 App Secret`
 
-默认主流程可全程在 GUI 完成，不需要手打命令。
+然后点击：
+
+- `一键安装并启动`
+
+### 第 6 步：在飞书里完成配对
+
+安装器启动后，你还需要：
+
+1. 去飞书里拿到配对码
+2. 回到安装器里填入配对码
+3. 点击 `批准配对`
+
+只有这一步完成后，飞书里才能真正开始聊天。
+
+## 适合谁
+
+这套方案适合：
+
+- 想在 Windows 本机跑 OpenClaw 的用户
+- 不想折腾 WSL / Docker 的用户
+- 想默认用飞书，不想先配 Telegram 的用户
+- 想用中文安装器的用户
+
+## 不适合谁
+
+如果你要的是下面这些场景，这个项目不适合：
+
+- 你想做飞书官方插件开发
+- 你想走飞书官方插件文章里的完整回调/发布路线
+- 你想要 Mac 版
+- 你想要 Docker / WSL 隔离方案
+
+## 安装器会帮你做什么
+
+安装器会自动处理这些事情：
+
+- 检查 Node.js
+- 缺少时尝试安装 Node.js
+- 检查 `openclaw`
+- 缺少时尝试全局安装 `openclaw`
+- 把飞书配置写入 `~/.openclaw/openclaw.json`
+- 默认关闭 Telegram
+- 提供启动网关和批准配对按钮
+
+## 安装器不会帮你做什么
+
+安装器不会替你做下面这些事情：
+
+- 不会替你替代飞书官方文档里的应用创建和基础配置步骤
+- 不会替你决定用哪个模型
+- 不会替你完成模型接入
+- 不会替你跳过配对
+
+## 一句话说明给小白
+
+可以直接把这句话发给别人：
+
+`这是给 Windows 用的 OpenClaw 飞书一键安装包。先按飞书官方文档把应用准备好，再把 OpenClaw 模型配好，然后双击 install.cmd，最后按界面做配对。`
+
+## 常见误解
+
+### 误解 1：双击安装器就能直接聊天
+
+不是。
+
+你还必须先完成：
+
+- 模型配置
+- 飞书应用创建
+- 飞书配对
+
+### 误解 2：用了这个项目，就不用看飞书官方文档
+
+不是。
+
+飞书应用的创建和基础配置，仍然要按飞书官方文档来做。
+
+本项目解决的是：
+
+- 在 Windows 上把 OpenClaw 接到你已经准备好的飞书应用
+
+### 误解 3：这是完全零配置
+
+不是。
+
+它只是把 Windows 安装、OpenClaw 配置写入、网关启动、配对操作尽量简化了。
+
+## GUI 快速开始
+
+1. 先准备好飞书 `App ID / App Secret`
+2. 双击 `install.cmd`
+3. 填 `工作目录`
+4. 填 `飞书 App ID`
+5. 填 `飞书 App Secret`
+6. 点 `一键安装并启动`
+7. 拿飞书配对码
+8. 点 `批准配对`
+
+## 健康检查
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-feishu.ps1
+```
+
+实时检查：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-feishu.ps1 -Live
+```
 
 ## 可选命令行模式
 
@@ -161,74 +231,27 @@
   -WorkspacePath "D:\OpenClawWorkspace"
 ```
 
-也可直接运行脚本：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\bootstrap-openclaw-feishu.ps1 `
-  -FeishuAppId "cli_xxx" `
-  -FeishuAppSecret "xxx" `
-  -WorkspacePath "D:\OpenClawWorkspace"
-```
-
-## 自动完成内容
-
-- 若缺少 Node.js，则自动通过 `winget` 安装 LTS 版本
-- 若缺少 `openclaw`，则自动通过 `npm -g` 安装
-- 自动写入飞书通道配置到 `~/.openclaw/openclaw.json`
-- 默认关闭 Telegram
-- 可选应用 `openclaw_bot + ACL` 硬锁策略
-
-## 健康检查
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-feishu.ps1
-```
-
-实时检查（更慢）：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\doctor-openclaw-feishu.ps1 -Live
-```
-
 ## 安全说明
 
-- 这是 Windows 主机侧加固，不是容器/内核级隔离。
-- 主要边界来自低权限账号与 NTFS ACL。
-- 若使用日常高权限账号运行 OpenClaw，隔离效果会明显变弱。
+- 这是 Windows 主机侧加固，不是容器级隔离
+- 主要边界来自低权限账号和 NTFS ACL
+- 如果你直接用日常高权限账号运行，隔离效果会明显变弱
+
+## 相关文档
+
+- [docs/OPENCLAW_MODEL_SETUP_CN.md](docs/OPENCLAW_MODEL_SETUP_CN.md)
+- [docs/FEISHU_SECURITY_CHECKLIST.md](docs/FEISHU_SECURITY_CHECKLIST.md)
+- [docs/BEGINNER_DELIVERY.md](docs/BEGINNER_DELIVERY.md)
+- [docs/PUBLISH_CHECKLIST_CN.md](docs/PUBLISH_CHECKLIST_CN.md)
 
 ## 脚本列表
 
-- `install.cmd`：默认 GUI 入口（`install.cmd cli ...` 为命令行模式）
-- `scripts/openclaw-easy-gui.ps1`：图形化安装器（含启动网关、批准配对）
-- `scripts/bootstrap-openclaw-feishu.ps1`：安装 + 配置 + 可选硬锁
+- `install.cmd`：默认 GUI 入口
+- `scripts/openclaw-easy-gui.ps1`：图形安装器
+- `scripts/bootstrap-openclaw-feishu.ps1`：安装和配置脚本
 - `scripts/doctor-openclaw-feishu.ps1`：诊断脚本
-- `scripts/start-openclaw-gateway.ps1`：后台启动网关
-- `scripts/stop-openclaw-gateway.ps1`：停止网关进程
-- `scripts/apply-openclaw-hardlock-elevated.ps1`：提权入口
-- `scripts/setup-openclaw-hardlock.ps1`：硬锁实现
-- `scripts/test-openclaw-hardlock.ps1`：硬锁验证
-- `scripts/rollback-openclaw-hardlock.ps1`：回滚硬锁
-
-## 策略文档
-
-- `docs/POSITIONING_AND_STRATEGY.md`：定位与差异化策略
-- `docs/LAUNCH_30D.md`：30 天发布执行清单
-- `docs/MARKETING_COPY_CN.md`：中文宣传文案模板
-- `docs/FEISHU_SECURITY_CHECKLIST.md`：飞书安全检查清单
-- `docs/BEGINNER_DELIVERY.md`：给从没用过 GitHub 的小白用户的交付建议
-- `docs/PUBLISH_CHECKLIST_CN.md`：发布给新手前必须讲清楚的检查清单
-
-## GUI 截图命令
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\openclaw-easy-gui.ps1 -ScreenshotPath .\assets\gui\openclaw-easy-gui.png
-```
-
-## 打包命令
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\make-release-zip.ps1
-```
+- `scripts/start-openclaw-gateway.ps1`：启动网关
+- `scripts/stop-openclaw-gateway.ps1`：停止网关
 
 ## 许可证
 
