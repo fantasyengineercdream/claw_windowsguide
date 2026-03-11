@@ -157,7 +157,7 @@ $panelPrereq.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
 $form.Controls.Add($panelPrereq)
 
 $prereqTitle = New-Object System.Windows.Forms.Label
-$prereqTitle.Text = "先做模型准备, 再做飞书接入"
+$prereqTitle.Text = "先准备飞书应用, 再准备 OpenClaw 模型"
 $prereqTitle.Location = New-Object System.Drawing.Point(16, 10)
 $prereqTitle.Size = New-Object System.Drawing.Size(280, 24)
 $prereqTitle.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 10, [System.Drawing.FontStyle]::Bold)
@@ -165,14 +165,14 @@ $prereqTitle.ForeColor = [System.Drawing.Color]::FromArgb(120, 80, 8)
 $panelPrereq.Controls.Add($prereqTitle)
 
 $prereqText = New-Object System.Windows.Forms.Label
-$prereqText.Text = "这一步只负责安装 OpenClaw 和接入飞书. 开始前, 请先在 OpenClaw 里完成模型接入, 再选好默认模型."
+$prereqText.Text = "开始前, 请先按飞书官方文档准备好 App ID/App Secret, 再在 OpenClaw 里完成模型接入并选好默认模型."
 $prereqText.Location = New-Object System.Drawing.Point(16, 34)
 $prereqText.Size = New-Object System.Drawing.Size(720, 20)
 $prereqText.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 9)
 $prereqText.ForeColor = [System.Drawing.Color]::FromArgb(102, 76, 11)
 $panelPrereq.Controls.Add($prereqText)
 
-$btnOpenModelGuide = New-Button -Text "打开模型准备教程" -X 770 -Y 14 -Width 154 -Height 34 -BackColor ([System.Drawing.Color]::FromArgb(255, 183, 77)) -ForeColor ([System.Drawing.Color]::FromArgb(74, 43, 0))
+$btnOpenModelGuide = New-Button -Text "打开模型教程" -X 770 -Y 14 -Width 154 -Height 34 -BackColor ([System.Drawing.Color]::FromArgb(255, 183, 77)) -ForeColor ([System.Drawing.Color]::FromArgb(74, 43, 0))
 $panelPrereq.Controls.Add($btnOpenModelGuide)
 
 $panelConfig = New-Object System.Windows.Forms.Panel
@@ -227,13 +227,13 @@ $panelConfig.Controls.Add($txtAppSecret)
 
 $y += 44
 $chkModelReady = New-Object System.Windows.Forms.CheckBox
-$chkModelReady.Text = "我已经在 OpenClaw 里完成模型接入, 并选好了默认模型"
+$chkModelReady.Text = "我已经准备好飞书 App ID/Secret, 并在 OpenClaw 里完成模型接入和默认模型设置"
 $chkModelReady.Location = New-Object System.Drawing.Point(190, $y)
 $chkModelReady.Size = New-Object System.Drawing.Size(470, 24)
 $panelConfig.Controls.Add($chkModelReady)
 
 $hintModelReady = New-Object System.Windows.Forms.Label
-$hintModelReady.Text = "不知道怎么做? 点上方""打开模型准备教程"""
+$hintModelReady.Text = "模型不会自动配置; 不会飞书应用配置时请先看官方文档"
 $hintModelReady.Location = New-Object System.Drawing.Point(680, ($y + 2))
 $hintModelReady.Size = New-Object System.Drawing.Size(244, 20)
 $hintModelReady.Font = New-Object System.Drawing.Font("Microsoft YaHei UI", 8)
@@ -319,7 +319,7 @@ $txtLog.WordWrap = $false
 $txtLog.Font = New-Object System.Drawing.Font("Consolas", 9)
 $txtLog.Location = New-Object System.Drawing.Point(16, 40)
 $txtLog.Size = New-Object System.Drawing.Size(910, 118)
-$txtLog.Text = "就绪. 请填写配置后点击 一键安装并启动."
+$txtLog.Text = "就绪. 请先确认飞书应用和 OpenClaw 模型都已准备好, 再点击 一键安装并启动."
 $panelLog.Controls.Add($txtLog)
 
 function Update-StateTextBox {
@@ -489,8 +489,8 @@ $btnRun.Add_Click({
     }
     if (-not $chkModelReady.Checked) {
         [System.Windows.Forms.MessageBox]::Show(
-            "请先在 OpenClaw 里完成模型接入并选好默认模型, 再回来执行安装.`r`n`r`n你可以点击顶部的""打开模型准备教程"".",
-            "先完成模型准备",
+            "请先准备好飞书 App ID/App Secret, 并在 OpenClaw 里完成模型接入和默认模型设置, 再回来执行安装.`r`n`r`n你可以点击顶部的""打开模型教程"".",
+            "先完成前置准备",
             [System.Windows.Forms.MessageBoxButtons]::OK,
             [System.Windows.Forms.MessageBoxIcon]::Warning
         ) | Out-Null
@@ -548,7 +548,7 @@ $btnRun.Add_Click({
         }
         $txtLog.Text = $allOutput
         [System.Windows.Forms.MessageBox]::Show(
-            "安装完成, 已尝试启动网关. 请在 飞书配对码 中输入代码并点击 批准配对.",
+            "安装完成, 已尝试启动网关. 下一步: 去飞书里拿配对码, 回到这里填入 飞书配对码, 然后点击 批准配对.",
             "OpenClaw 一键安装",
             [System.Windows.Forms.MessageBoxButtons]::OK,
             [System.Windows.Forms.MessageBoxIcon]::Information
@@ -577,6 +577,7 @@ if ($isScreenshotMode) {
     $txtBotUser.Text = "openclaw_bot"
     $txtPairCode.Text = "PAIRCODE123"
     $txtLog.Text = @"
+[提示] 已先按飞书官方文档准备好 App ID/App Secret
 [提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
 [步骤] 准备工作目录
 [步骤] 检查 Node.js 运行环境
