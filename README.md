@@ -1,4 +1,4 @@
-# OpenClaw Windows 一键部署（飞书版）
+﻿# OpenClaw Windows 一键部署（飞书版）
 
 给 Windows 用户准备的 OpenClaw 安装包。
 
@@ -25,7 +25,7 @@
 2. 拿到：
    - `App ID`
    - `App Secret`
-3. 再把 OpenClaw 的模型跑通  
+3. 再把 OpenClaw 的模型跑通
    参考：[docs/OPENCLAW_MODEL_SETUP_CN.md](docs/OPENCLAW_MODEL_SETUP_CN.md)
 4. 下载本项目 ZIP，解压后双击 `install.cmd`
 5. 在安装器里填：
@@ -37,6 +37,10 @@
 8. 回到安装器里点击 `批准配对`
 
 做完这 8 步，才算完成。
+
+飞书官方文档：
+
+- <https://www.feishu.cn/content/article/7613711414611463386>
 
 ## 你需要提前准备什么
 
@@ -66,6 +70,10 @@
 ### 第 1 步：先准备飞书应用
 
 先按飞书官方文档，在飞书开放平台把应用创建好，并完成基础配置。
+
+官方文档：
+
+- <https://www.feishu.cn/content/article/7613711414611463386>
 
 然后拿到：
 
@@ -160,7 +168,7 @@
 
 安装器不会替你做下面这些事情：
 
-- 不会替你替代飞书官方文档里的应用创建和基础配置步骤
+- 不会替代飞书官方文档里的应用创建和基础配置步骤
 - 不会替你决定用哪个模型
 - 不会替你完成模型接入
 - 不会替你跳过配对
