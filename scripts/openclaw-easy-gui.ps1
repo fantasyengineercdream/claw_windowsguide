@@ -1,6 +1,8 @@
 ﻿[CmdletBinding()]
 param(
-    [string]$ScreenshotPath = ""
+    [string]$ScreenshotPath = "",
+    [ValidateSet("default", "initial", "configured", "paired")]
+    [string]$ScreenshotVariant = "default"
 )
 
 Set-StrictMode -Version Latest
@@ -117,6 +119,71 @@ function Save-FormScreenshot {
         $bitmap.Dispose()
         $TargetForm.Close()
     }
+}
+
+function Set-ScreenshotState {
+    param(
+        [Parameter(Mandatory = $true)][string]$Variant
+    )
+
+    $txtWorkspace.Text = "D:\OpenClawWorkspace"
+    $txtState.Text = "D:\OpenClawWorkspace\.openclaw-state"
+    $txtAppId.Text = ""
+    $txtAppSecret.Text = ""
+    $chkModelReady.Checked = $false
+    $txtBotUser.Text = "openclaw_bot"
+    $txtPairCode.Text = ""
+
+    switch ($Variant) {
+        "initial" {
+            $txtLog.Text = "就绪. 请先准备飞书应用和 OpenClaw 模型, 再点击 一键安装并启动."
+        }
+        "configured" {
+            $txtAppId.Text = "cli_your_app_id"
+            $txtAppSecret.Text = "****************"
+            $chkModelReady.Checked = $true
+            $txtLog.Text = @"
+[提示] 已先按飞书官方文档准备好 App ID/App Secret
+[提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
+[下一步] 点击 一键安装并启动
+"@
+        }
+        "paired" {
+            $txtAppId.Text = "cli_your_app_id"
+            $txtAppSecret.Text = "****************"
+            $chkModelReady.Checked = $true
+            $txtPairCode.Text = "PAIRCODE123"
+            $txtLog.Text = @"
+[提示] 已先按飞书官方文档准备好 App ID/App Secret
+[提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
+[步骤] 准备工作目录
+[步骤] 检查 Node.js 运行环境
+[步骤] 写入飞书通道配置
+[步骤] 应用 ACL 硬锁
+[步骤] 启动网关
+[下一步] 去飞书里拿配对码, 回到这里点击 批准配对
+"@
+        }
+        default {
+            $txtAppId.Text = "cli_your_app_id"
+            $txtAppSecret.Text = "****************"
+            $chkModelReady.Checked = $true
+            $txtPairCode.Text = "PAIRCODE123"
+            $txtLog.Text = @"
+[提示] 已先按飞书官方文档准备好 App ID/App Secret
+[提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
+[步骤] 准备工作目录
+[步骤] 检查 Node.js 运行环境
+[步骤] 写入飞书通道配置
+[步骤] 应用 ACL 硬锁
+[步骤] 启动网关
+[步骤] 等待飞书配对码
+完成.
+"@
+        }
+    }
+
+    Update-StateTextBox
 }
 
 $form = New-Object System.Windows.Forms.Form
@@ -569,29 +636,12 @@ $btnRun.Add_Click({
 })
 
 if ($isScreenshotMode) {
-    $txtWorkspace.Text = "D:\OpenClawWorkspace"
-    $txtState.Text = "D:\OpenClawWorkspace\.openclaw-state"
-    $txtAppId.Text = "cli_your_app_id"
-    $txtAppSecret.Text = "****************"
-    $chkModelReady.Checked = $true
-    $txtBotUser.Text = "openclaw_bot"
-    $txtPairCode.Text = "PAIRCODE123"
-    $txtLog.Text = @"
-[提示] 已先按飞书官方文档准备好 App ID/App Secret
-[提示] 已先在 OpenClaw 中完成模型接入与默认模型设置
-[步骤] 准备工作目录
-[步骤] 检查 Node.js 运行环境
-[步骤] 写入飞书通道配置
-[步骤] 应用 ACL 硬锁
-[步骤] 启动网关
-[步骤] 等待飞书配对码
-完成.
-"@
-    Update-StateTextBox
+    Set-ScreenshotState -Variant $ScreenshotVariant
     Save-FormScreenshot -TargetForm $form -Path $ScreenshotPath
     Write-Host "Screenshot saved: $([System.IO.Path]::GetFullPath($ScreenshotPath))"
     exit 0
 }
 
 [void]$form.ShowDialog()
+
 

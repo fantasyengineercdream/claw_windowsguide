@@ -15,7 +15,7 @@
 - 飞书应用本身，仍然要先按飞书官方文档完成创建和基础配置
 - 本项目负责的是：把你已经准备好的飞书应用接到 OpenClaw
 
-![OpenClaw 安装器截图](assets/gui/openclaw-easy-gui.png)
+![OpenClaw 安装器初始界面](assets/gui/openclaw-easy-gui-initial.png)
 
 ## 先看这一段
 
@@ -312,6 +312,26 @@
 6. 点 `一键安装并启动`
 7. 拿飞书配对码
 8. 点 `批准配对`
+
+GUI 示例：
+
+### 1. 初始界面
+
+先看顶部提示，确认你已经先准备好飞书应用和 OpenClaw 模型。
+
+![OpenClaw 安装器初始界面](assets/gui/openclaw-easy-gui-initial.png)
+
+### 2. 已填配置，准备安装
+
+把 `工作目录`、`App ID`、`App Secret` 填好，并勾选前置准备完成。
+
+![OpenClaw 安装器已填配置界面](assets/gui/openclaw-easy-gui-configured.png)
+
+### 3. 安装后，等待配对
+
+安装完成后，去飞书里拿配对码，再回到界面点击 `批准配对`。
+
+![OpenClaw 安装器配对界面](assets/gui/openclaw-easy-gui-paired.png)
 
 ## 健康检查
 
