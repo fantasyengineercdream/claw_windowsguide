@@ -14,6 +14,7 @@ Add-Type -AssemblyName System.Drawing
 $isScreenshotMode = -not [string]::IsNullOrWhiteSpace($ScreenshotPath)
 $bootstrapScript = Join-Path $PSScriptRoot "bootstrap-openclaw-feishu.ps1"
 $startGatewayScript = Join-Path $PSScriptRoot "start-openclaw-gateway.ps1"
+$doctorScript = Join-Path $PSScriptRoot "doctor-openclaw-feishu.ps1"
 $modelGuidePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\docs\OPENCLAW_MODEL_SETUP_CN.md"))
 
 if (-not (Test-Path -LiteralPath $bootstrapScript)) {
@@ -350,17 +351,20 @@ $panelOps.Controls.Add($opsTitle)
 $btnRun = New-Button -Text "一键安装并启动" -X 16 -Y 44 -Width 200 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(33, 150, 83))
 $panelOps.Controls.Add($btnRun)
 
-$btnStartGateway = New-Button -Text "启动网关" -X 228 -Y 44 -Width 150 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(30, 136, 229))
+$btnStartGateway = New-Button -Text "启动网关" -X 228 -Y 44 -Width 130 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(30, 136, 229))
 $panelOps.Controls.Add($btnStartGateway)
 
-$panelOps.Controls.Add((New-Label -Text "飞书配对码" -X 390 -Y 52 -Width 90))
-$txtPairCode = New-Input -X 476 -Y 48 -Width 190
+$btnSecurityCheck = New-Button -Text "安全检查" -X 370 -Y 44 -Width 110 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(255, 183, 77)) -ForeColor ([System.Drawing.Color]::FromArgb(74, 43, 0))
+$panelOps.Controls.Add($btnSecurityCheck)
+
+$panelOps.Controls.Add((New-Label -Text "飞书配对码" -X 492 -Y 52 -Width 90))
+$txtPairCode = New-Input -X 578 -Y 48 -Width 150
 $panelOps.Controls.Add($txtPairCode)
 
-$btnApprovePairing = New-Button -Text "批准配对" -X 676 -Y 44 -Width 130 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(123, 31, 162))
+$btnApprovePairing = New-Button -Text "批准配对" -X 738 -Y 44 -Width 110 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(123, 31, 162))
 $panelOps.Controls.Add($btnApprovePairing)
 
-$btnClose = New-Button -Text "关闭" -X 816 -Y 44 -Width 110 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(90, 103, 121))
+$btnClose = New-Button -Text "关闭" -X 858 -Y 44 -Width 68 -Height 38 -BackColor ([System.Drawing.Color]::FromArgb(90, 103, 121))
 $panelOps.Controls.Add($btnClose)
 
 $panelLog = New-Object System.Windows.Forms.Panel
@@ -490,6 +494,39 @@ $btnStartGateway.Add_Click({
     }
 })
 
+$btnSecurityCheck.Add_Click({
+    if (-not (Test-Path -LiteralPath $doctorScript)) {
+        [System.Windows.Forms.MessageBox]::Show(
+            "缺少脚本: $doctorScript",
+            "OpenClaw 一键安装",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Error
+        ) | Out-Null
+        return
+    }
+
+    try {
+        $out = (& $doctorScript 2>&1 | Out-String)
+        if ([string]::IsNullOrWhiteSpace($out)) {
+            $out = "安全检查完成."
+        }
+        Append-Log -LogBox $txtLog -Message "== 安全检查 ==`r`n$out"
+        [System.Windows.Forms.MessageBox]::Show(
+            "安全检查已完成. 请根据日志处理 FAIL 或 WARN 项.",
+            "OpenClaw 一键安装",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Information
+        ) | Out-Null
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show(
+            "安全检查失败: $($_.Exception.Message)",
+            "OpenClaw 一键安装",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Error
+        ) | Out-Null
+    }
+})
+
 $btnApprovePairing.Add_Click({
     $code = $txtPairCode.Text.Trim()
     if ([string]::IsNullOrWhiteSpace($code)) {
@@ -610,12 +647,18 @@ $btnRun.Add_Click({
                 $allOutput += "`r`n`r`n== 启动网关 ==`r`n$startOut"
             }
         }
+        if (Test-Path -LiteralPath $doctorScript) {
+            $doctorOut = (& $doctorScript 2>&1 | Out-String)
+            if (-not [string]::IsNullOrWhiteSpace($doctorOut)) {
+                $allOutput += "`r`n`r`n== 安全检查 ==`r`n$doctorOut"
+            }
+        }
         if ([string]::IsNullOrWhiteSpace($allOutput)) {
             $allOutput = "安装完成, 未返回额外日志."
         }
         $txtLog.Text = $allOutput
         [System.Windows.Forms.MessageBox]::Show(
-            "安装完成, 已尝试启动网关. 下一步: 去飞书里拿配对码, 回到这里填入 飞书配对码, 然后点击 批准配对.",
+            "安装完成, 已尝试启动网关并自动做了一次安全检查. 下一步: 去飞书里拿配对码, 回到这里填入 飞书配对码, 然后点击 批准配对.",
             "OpenClaw 一键安装",
             [System.Windows.Forms.MessageBoxButtons]::OK,
             [System.Windows.Forms.MessageBoxIcon]::Information
